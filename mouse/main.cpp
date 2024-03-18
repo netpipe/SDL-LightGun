@@ -13,6 +13,8 @@ const int SCREEN_HEIGHT = 600;
 const int BUG_WIDTH = 50;
 const int BUG_HEIGHT = 50;
 
+bool isFullScreen = false; // false=fullscreen
+
 #define SINDEN
 
 // Function to check collision between two rectangles
@@ -30,6 +32,16 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) {
     if (bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
         return false;
     return true;
+}
+
+
+
+void toggleFullScreen(SDL_Window* window, bool currentState)
+{
+    isFullScreen = !currentState;
+
+    SDL_SetWindowFullscreen(window, !currentState);
+    SDL_ShowCursor(currentState);
 }
 
 int main(int argc, char* args[]) {
@@ -68,15 +80,15 @@ int main(int argc, char* args[]) {
         std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;
     }
-#ifdef SINDEN
-    SDL_Surface *background = IMG_Load("SindenBorderWhiteLarge_Wide.png");
-    if(background == NULL)
-    {
-        SDL_ShowSimpleMessageBox(0, "Background init error",         SDL_GetError(), window);
-    }
-SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, background);
-SDL_FreeSurface(background);
-#endif
+    #ifdef SINDEN
+        SDL_Surface *background = IMG_Load("SindenBorderWhiteLarge_Wide.png");
+        if(background == NULL)
+        {
+            SDL_ShowSimpleMessageBox(0, "Background init error",         SDL_GetError(), window);
+        }
+        SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, background);
+        SDL_FreeSurface(background);
+    #endif
 
 
     // Load images
@@ -96,7 +108,7 @@ SDL_FreeSurface(background);
         return 1;
     }
 
-
+toggleFullScreen(window,isFullScreen);
 
     // Bug position
     int bugX = SCREEN_WIDTH / 2 - BUG_WIDTH / 2;
@@ -138,9 +150,9 @@ SDL_FreeSurface(background);
         // Clear screen
         SDL_SetRenderDrawColor(renderer, 25, 25, 80, 25);
         SDL_RenderClear(renderer);
-#ifdef SINDEN
-SDL_RenderCopy(renderer, texture, NULL, NULL);
-#endif
+        #ifdef SINDEN
+            SDL_RenderCopy(renderer, texture, NULL, NULL);
+        #endif
         // Render bug
         SDL_Rect bugRect = { bugX, bugY, BUG_WIDTH, BUG_HEIGHT };
         SDL_RenderCopy(renderer, bugTexture, NULL, &bugRect);
@@ -153,6 +165,9 @@ SDL_RenderCopy(renderer, texture, NULL, NULL);
     }
 
     // Free resources
+    #ifdef SINDEN
+    SDL_DestroyTexture(texture);
+    #endif
     SDL_DestroyTexture(bugTexture);
     Mix_FreeChunk(squishSound);
     SDL_DestroyRenderer(renderer);
