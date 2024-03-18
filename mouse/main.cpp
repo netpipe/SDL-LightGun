@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 // Screen dimensions
 const int SCREEN_WIDTH = 800;
@@ -16,6 +17,14 @@ const int BUG_HEIGHT = 50;
 bool isFullScreen = false; // false=fullscreen
 
 #define SINDEN
+
+// Shot mark structure
+struct ShotMark {
+    int x;
+    int y;
+    int lifespan; // Lifespan in milliseconds
+    Uint32 spawnTime; // Time when the shot mark was spawned
+};
 
 // Function to check collision between two rectangles
 bool checkCollision(SDL_Rect a, SDL_Rect b) {
@@ -145,6 +154,9 @@ SDL_ShowCursor(SDL_ENABLE);
     // Main loop flag
     bool quit = false;
 
+    // Shot marks vector
+    std::vector<ShotMark> shotMarks;
+
     // Event handler
     SDL_Event e;
 
@@ -189,8 +201,8 @@ SDL_ShowCursor(SDL_ENABLE);
                         // Shot missed
                         std::cout << "Missed shot!" << std::endl;
                         // Draw shot mark
-                        SDL_Rect shotMarkRect = { mouseX, mouseY, 32, 32 };
-                        SDL_RenderCopy(renderer, shotMarkTexture, NULL, &shotMarkRect);
+                        ShotMark newShotMark = { mouseX, mouseY, 1000, SDL_GetTicks() }; // 10 seconds lifespan
+                        shotMarks.push_back(newShotMark);
                     }
                     // Increment shots fired
                     shotsFired++;
@@ -209,7 +221,6 @@ SDL_ShowCursor(SDL_ENABLE);
                     std::cout << "Manual reload!" << std::endl;
                     shotsFired = 0; // Reset shots fired
                     Mix_PlayChannel(-1, reloadSound, 0); // Play squish sound
-
                 }
             }
         }
@@ -222,6 +233,16 @@ SDL_ShowCursor(SDL_ENABLE);
         #ifdef SINDEN
             SDL_RenderCopy(renderer, texture, NULL, NULL);
         #endif
+            // Render shot marks
+            for (auto it = shotMarks.begin(); it != shotMarks.end();) {
+                if (SDL_GetTicks() - it->spawnTime > it->lifespan) {
+                    it = shotMarks.erase(it); // Remove shot mark if its lifespan has elapsed
+                } else {
+                    SDL_Rect shotMarkRect = { it->x, it->y, 10, 10 };
+                    SDL_RenderCopy(renderer, shotMarkTexture, NULL, &shotMarkRect);
+                    ++it;
+                }
+            }
         // Render bug
         SDL_Rect bugRect = { bugX, bugY, BUG_WIDTH, BUG_HEIGHT };
         SDL_RenderCopy(renderer, bugTexture, NULL, &bugRect);
