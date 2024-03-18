@@ -1,6 +1,6 @@
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -48,7 +48,19 @@ int main(int argc, char* args[]) {
         std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << std::endl;
         return 1;
     }
-
+    // Create window
+    SDL_Window* window = SDL_CreateWindow("Bug Squash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                          SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if (window == nullptr) {
+        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        return 1;
+    }
+    // Create renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == nullptr) {
+        std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        return 1;
+    }
     // Load images
     SDL_Surface* bugSurface = IMG_Load("bug.png");
     if (!bugSurface) {
@@ -65,6 +77,9 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
+    // Bug position
+    int bugX = SCREEN_WIDTH / 2 - BUG_WIDTH / 2;
+    int bugY = SCREEN_HEIGHT / 2 - BUG_HEIGHT / 2;
     // Seed random number generator
     std::srand(std::time(nullptr));
 
