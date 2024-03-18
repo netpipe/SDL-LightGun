@@ -13,6 +13,8 @@ const int SCREEN_HEIGHT = 600;
 const int BUG_WIDTH = 50;
 const int BUG_HEIGHT = 50;
 
+#define SINDEN
+
 // Function to check collision between two rectangles
 bool checkCollision(SDL_Rect a, SDL_Rect b) {
     int leftA = a.x;
@@ -31,6 +33,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) {
 }
 
 int main(int argc, char* args[]) {
+
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
@@ -48,6 +51,9 @@ int main(int argc, char* args[]) {
         std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << std::endl;
         return 1;
     }
+
+
+
     // Create window
     SDL_Window* window = SDL_CreateWindow("Bug Squash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                           SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -62,6 +68,17 @@ int main(int argc, char* args[]) {
         std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;
     }
+#ifdef SINDEN
+    SDL_Surface *background = IMG_Load("SindenBorderWhiteLarge_Wide.png");
+    if(background == NULL)
+    {
+        SDL_ShowSimpleMessageBox(0, "Background init error",         SDL_GetError(), window);
+    }
+SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, background);
+SDL_FreeSurface(background);
+#endif
+
+
     // Load images
 
     SDL_Surface* bugSurface = IMG_Load("bug.png");
@@ -119,9 +136,11 @@ int main(int argc, char* args[]) {
         }
 
         // Clear screen
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_SetRenderDrawColor(renderer, 25, 25, 80, 25);
         SDL_RenderClear(renderer);
-
+#ifdef SINDEN
+SDL_RenderCopy(renderer, texture, NULL, NULL);
+#endif
         // Render bug
         SDL_Rect bugRect = { bugX, bugY, BUG_WIDTH, BUG_HEIGHT };
         SDL_RenderCopy(renderer, bugTexture, NULL, &bugRect);
