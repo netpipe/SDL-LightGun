@@ -109,7 +109,7 @@ int main(int argc, char* args[]) {
     }
 
 toggleFullScreen(window,isFullScreen);
-
+SDL_ShowCursor(SDL_ENABLE);
     // Bug position
     int bugX = SCREEN_WIDTH / 2 - BUG_WIDTH / 2;
     int bugY = SCREEN_HEIGHT / 2 - BUG_HEIGHT / 2;
@@ -130,6 +130,10 @@ toggleFullScreen(window,isFullScreen);
             // User requests quit
             if (e.type == SDL_QUIT) {
                 quit = true;
+            }
+            switch( e.key.keysym.sym )
+            {
+            case SDLK_ESCAPE: quit = true; break;
             }
             // Handle mouse click
             if (e.type == SDL_MOUSEBUTTONDOWN) {
