@@ -64,7 +64,15 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
+    // Load background music
+    Mix_Music* backgroundMusic = Mix_LoadMUS("music.mp3");
+    if (!backgroundMusic) {
+        std::cerr << "Failed to load background music! SDL_mixer Error: " << Mix_GetError() << std::endl;
+        return 1;
+    }
 
+    // Play background music
+    Mix_PlayMusic(backgroundMusic, -1); // -1 for looping
 
     // Create window
     SDL_Window* window = SDL_CreateWindow("Bug Squash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
