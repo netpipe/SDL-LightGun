@@ -115,6 +115,21 @@ int main(int argc, char* args[]) {
         std::cerr << "Failed to load squish sound effect! SDL_mixer Error: " << Mix_GetError() << std::endl;
         return 1;
     }
+    // Load sound effects
+    Mix_Chunk* reloadSound = Mix_LoadWAV("reload.wav");
+    if (!reloadSound) {
+        std::cerr << "Failed to load reloadSound effect! SDL_mixer Error: " << Mix_GetError() << std::endl;
+        return 1;
+    }
+    // Load shot mark image
+    SDL_Surface* shotMarkSurface = IMG_Load("bullet-hole.png");
+    if (!shotMarkSurface) {
+        std::cerr << "Failed to load shot mark image! SDL_image Error: " << IMG_GetError() << std::endl;
+        return 1;
+    }
+    SDL_Texture* shotMarkTexture = SDL_CreateTextureFromSurface(renderer, shotMarkSurface);
+    SDL_FreeSurface(shotMarkSurface);
+
 
 toggleFullScreen(window,isFullScreen);
 SDL_ShowCursor(SDL_ENABLE);
@@ -124,6 +139,8 @@ SDL_ShowCursor(SDL_ENABLE);
 
     // Seed random number generator
     std::srand(std::time(nullptr));
+
+    int shotsFired = 0;
 
     // Main loop flag
     bool quit = false;
@@ -143,21 +160,61 @@ SDL_ShowCursor(SDL_ENABLE);
             {
             case SDLK_ESCAPE: quit = true; break;
             }
+            // Handle joystick axis motion
+            if (e.type == SDL_JOYAXISMOTION) {
+                // Here you can adjust bugX and bugY based on joystick input
+                // Example:
+                // if (e.jaxis.axis == 0) { // X-axis motion
+                //     bugX += e.jaxis.value / 1000;
+                // }
+                // if (e.jaxis.axis == 1) { // Y-axis motion
+                //     bugY += e.jaxis.value / 1000;
+                // }
+            }
             // Handle mouse click
             if (e.type == SDL_MOUSEBUTTONDOWN) {
-                int mouseX, mouseY;
-                SDL_GetMouseState(&mouseX, &mouseY);
-                SDL_Rect mouseRect = { mouseX, mouseY, 1, 1 };
-                SDL_Rect bugRect = { bugX, bugY, BUG_WIDTH, BUG_HEIGHT };
-                if (checkCollision(bugRect, mouseRect)) {
-                    // Bug squashed!
-                    std::cout << "Bug squashed!" << std::endl;
-                    Mix_PlayChannel(-1, squishSound, 0); // Play squish sound
-                    bugX = std::rand() % (SCREEN_WIDTH - BUG_WIDTH); // Generate new bug position
-                    bugY = std::rand() % (SCREEN_HEIGHT - BUG_HEIGHT);
+                if (e.button.button == SDL_BUTTON_LEFT) { // Left mouse button
+                    int mouseX, mouseY;
+                    SDL_GetMouseState(&mouseX, &mouseY);
+                    SDL_Rect mouseRect = { mouseX, mouseY, 1, 1 };
+                    SDL_Rect bugRect = { bugX, bugY, BUG_WIDTH, BUG_HEIGHT };
+                                     if (shotsFired <= 5) {
+                    if (checkCollision(bugRect, mouseRect)) {
+                        // Bug squashed!
+                        std::cout << "Bug squashed!" << std::endl;
+                        Mix_PlayChannel(-1, squishSound, 0); // Play squish sound
+                        bugX = std::rand() % (SCREEN_WIDTH - BUG_WIDTH); // Generate new bug position
+                        bugY = std::rand() % (SCREEN_HEIGHT - BUG_HEIGHT);
+                    } else {
+                        // Shot missed
+                        std::cout << "Missed shot!" << std::endl;
+                        // Draw shot mark
+                        SDL_Rect shotMarkRect = { mouseX, mouseY, 32, 32 };
+                        SDL_RenderCopy(renderer, shotMarkTexture, NULL, &shotMarkRect);
+                    }
+                    // Increment shots fired
+                    shotsFired++;
+                    // Check if reload is needed
+                    //if (shotsFired >= 5) {
+                   //     std::cout << "Reloaded!" << std::endl;
+                   //     shotsFired = 0; // Reset shots fired
+                    }
+                                     else {
+                                         std::cout << "reload!" << std::endl;
+                                         Mix_PlayChannel(-1, reloadSound, 0); // Play squish sound
+
+
+                                     }
+                } else if (e.button.button == SDL_BUTTON_RIGHT) { // Right mouse button for reload
+                    std::cout << "Manual reload!" << std::endl;
+                    shotsFired = 0; // Reset shots fired
+                    Mix_PlayChannel(-1, reloadSound, 0); // Play squish sound
+
                 }
             }
         }
+
+
 
         // Clear screen
         SDL_SetRenderDrawColor(renderer, 25, 25, 80, 25);
