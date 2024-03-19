@@ -14,7 +14,7 @@ const int SCREEN_HEIGHT = 600;
 const int BUG_WIDTH = 50;
 const int BUG_HEIGHT = 50;
 
-bool isFullScreen = !false; // false=fullscreen
+bool isFullScreen = false; // false=fullscreen
 
 bool autoload = false;
 int clipsize =5;
