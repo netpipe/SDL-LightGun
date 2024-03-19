@@ -19,7 +19,7 @@ bool isFullScreen = false; // false=fullscreen
 bool autoload = false;
 int clipsize =5;
 bool reload;
-bool bautoload=autoload;
+
 #define SINDEN
 
 // Shot mark structure
