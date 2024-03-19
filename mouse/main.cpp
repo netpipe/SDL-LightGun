@@ -14,8 +14,12 @@ const int SCREEN_HEIGHT = 600;
 const int BUG_WIDTH = 50;
 const int BUG_HEIGHT = 50;
 
-bool isFullScreen = false; // false=fullscreen
+bool isFullScreen = !false; // false=fullscreen
 
+bool autoload = false;
+int clipsize =5;
+bool reload;
+bool bautoload=autoload;
 #define SINDEN
 
 // Shot mark structure
@@ -139,7 +143,7 @@ int main(int argc, char* args[]) {
     SDL_Texture* shotMarkTexture = SDL_CreateTextureFromSurface(renderer, shotMarkSurface);
     SDL_FreeSurface(shotMarkSurface);
 
-
+bool cursortoggle;
 toggleFullScreen(window,isFullScreen);
 SDL_ShowCursor(SDL_ENABLE);
     // Bug position
@@ -168,10 +172,16 @@ SDL_ShowCursor(SDL_ENABLE);
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
+            switch( e.type ){
+              case SDL_KEYDOWN:
+
+
             switch( e.key.keysym.sym )
             {
             case SDLK_ESCAPE: quit = true; break;
-            case SDLK_1: quit = true; break;
+            case SDLK_1: SDL_ShowCursor(!cursortoggle);cursortoggle=!cursortoggle;SDL_Delay(10); break;
+            case SDLK_5: reload=true;autoload=!autoload; std::cerr << autoload << "test" << std::endl;if (autoload){std::cerr << "autoloadon"<< std::endl;}; SDL_Delay(100);break;
+            }
             }
             // Handle joystick axis motion
             if (e.type == SDL_JOYAXISMOTION) {
@@ -185,13 +195,13 @@ SDL_ShowCursor(SDL_ENABLE);
                 // }
             }
             // Handle mouse click
-            if (e.type == SDL_MOUSEBUTTONDOWN) {
+            if (e.type == SDL_MOUSEBUTTONDOWN || reload) {
                 if (e.button.button == SDL_BUTTON_LEFT) { // Left mouse button
                     int mouseX, mouseY;
                     SDL_GetMouseState(&mouseX, &mouseY);
                     SDL_Rect mouseRect = { mouseX, mouseY, 1, 1 };
                     SDL_Rect bugRect = { bugX, bugY, BUG_WIDTH, BUG_HEIGHT };
-                                     if (shotsFired <= 5) {
+                                     if (shotsFired <= clipsize) {
                     if (checkCollision(bugRect, mouseRect)) {
                         // Bug squashed!
                         std::cout << "Bug squashed!" << std::endl;
@@ -207,22 +217,25 @@ SDL_ShowCursor(SDL_ENABLE);
                     }
                     // Increment shots fired
                     shotsFired++;
-                    // Check if reload is needed
-                    //if (shotsFired >= 5) {
-                   //     std::cout << "Reloaded!" << std::endl;
-                   //     shotsFired = 0; // Reset shots fired
-                    }
-                                     else {
+
+
+                                    } else {
+                                         // Check if reload is needed
+                                         if (shotsFired >= clipsize && autoload) {
+                                             std::cout << "Reloaded!" << std::endl;
+                                             shotsFired = 0; // Reset shots fired.
+                                         };
                                          std::cout << "reload!" << std::endl;
                                          Mix_PlayChannel(-1, reloadSound, 0); // Play squish sound
 
 
                                      }
-                } else if (e.button.button == SDL_BUTTON_RIGHT) { // Right mouse button for reload
+                } else if (e.button.button == SDL_BUTTON_RIGHT || reload) { // Right mouse button for reload
                     std::cout << "Manual reload!" << std::endl;
                     shotsFired = 0; // Reset shots fired
                     Mix_PlayChannel(-1, reloadSound, 0); // Play squish sound
                 }
+                reload=false;
             }
         }
 
