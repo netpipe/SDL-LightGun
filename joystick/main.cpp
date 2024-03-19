@@ -119,20 +119,40 @@ printf("Joystick has %d axes, %d hats, %d balls, and %d buttons\n",
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
-            // Handle joystick axis motion
-            if (e.type == SDL_JOYAXISMOTION) {
-                // Here you can adjust bugX and bugY based on joystick input
-                // Example:
-
-                std::cout << e.jaxis.value << std::endl;
-                 if (e.jaxis.axis == 0) { // X-axis motion
-                      std::cout << "xaxis" << e.jaxis.value << std::endl;
-                //     bugX += e.jaxis.value / 1000;
-                 }
-                 if (e.jaxis.axis == 1) { // Y-axis motion
-                //     bugY += e.jaxis.value / 1000;
-                      std::cout << "yaxis" << e.jaxis.value << std::endl;
-                 }
+            switch(e.type){
+            case SDL_JOYAXISMOTION:
+                printf("Joystick %d axis %d value: %d\n",
+                       e.jaxis.which,
+                       e.jaxis.axis, e.jaxis.value);
+                break;
+            case SDL_JOYHATMOTION:
+                printf("Joystick %d hat %d value:",
+                       e.jhat.which, e.jhat.hat);
+                if (e.jhat.value == SDL_HAT_CENTERED)
+                    printf(" centered");
+                if (e.jhat.value & SDL_HAT_UP)
+                    printf(" up");
+                if (e.jhat.value & SDL_HAT_RIGHT)
+                    printf(" right");
+                if (e.jhat.value & SDL_HAT_DOWN)
+                    printf(" down");
+                if (e.jhat.value & SDL_HAT_LEFT)
+                    printf(" left");
+                printf("\n");
+                break;
+            case SDL_JOYBALLMOTION:
+                printf("Joystick %d ball %d delta: (%d,%d)\n",
+                       e.jball.which,
+                       e.jball.ball, e.jball.xrel, e.jball.yrel);
+                break;
+            case SDL_JOYBUTTONDOWN:
+                printf("Joystick %d button %d down\n",
+                       e.jbutton.which, e.jbutton.button);
+                break;
+            case SDL_JOYBUTTONUP:
+                printf("Joystick %d button %d up\n",
+                       e.jbutton.which, e.jbutton.button);
+                break;
             }
             // Handle mouse click
             if (e.type == SDL_MOUSEBUTTONDOWN) {
