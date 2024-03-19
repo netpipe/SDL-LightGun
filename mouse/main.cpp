@@ -171,6 +171,7 @@ SDL_ShowCursor(SDL_ENABLE);
             switch( e.key.keysym.sym )
             {
             case SDLK_ESCAPE: quit = true; break;
+            case SDLK_1: quit = true; break;
             }
             // Handle joystick axis motion
             if (e.type == SDL_JOYAXISMOTION) {

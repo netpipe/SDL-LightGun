@@ -1,6 +1,8 @@
 # SDL-LightGun
 designed for use with lightguns like sinden which use mouse coords or joystick.
 
+demos were helped by chatGPT
+
 
 https://pixabay.com/ for gfx and sfx
 https://incompetech.com/ for music
