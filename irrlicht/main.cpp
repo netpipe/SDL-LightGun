@@ -3,6 +3,9 @@
 #include <vector>
 #include <ctime>
 
+//g++ main.cpp -lIrrlicht
+
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -11,8 +14,8 @@ using namespace io;
 using namespace gui;
 
 // Screen dimensions
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 768;
 
 // Bug dimensions
 const int BUG_WIDTH = 50;
@@ -136,7 +139,7 @@ int main() {
     while (!quit && device->run()) {
         if (device->isWindowActive()) {
             // Clear the screen
-            driver->beginScene(true, true, SColor(255, 255, 255, 255));
+            driver->beginScene(true, true, SColor(55, 85, 25, 25));
 
             // Render background
             driver->draw2DImage(backgroundTexture, core::position2d<s32>(0, 0),

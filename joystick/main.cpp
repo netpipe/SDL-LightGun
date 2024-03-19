@@ -76,8 +76,7 @@ int main(int argc, char* args[]) {
         std::cerr << "Failed to load squish sound effect! SDL_mixer Error: " << Mix_GetError() << std::endl;
         return 1;
     }
-
-    // Bug position
+   // Bug position
     int bugX = SCREEN_WIDTH / 2 - BUG_WIDTH / 2;
     int bugY = SCREEN_HEIGHT / 2 - BUG_HEIGHT / 2;
     // Seed random number generator
@@ -88,6 +87,29 @@ int main(int argc, char* args[]) {
 
     // Event handler
     SDL_Event e;
+SDL_Joystick *joystick;
+    const char *name = NULL;
+
+
+printf("There are %d joysticks attached\n", SDL_NumJoysticks());
+for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+    name = SDL_JoystickNameForIndex(i);
+    printf("Joystick %d: %s\n", i, name ? name : "Unknown Joystick");
+    joystick = SDL_JoystickOpen(i);
+    if (joystick == NULL) {
+        fprintf(stderr, "SDL_JoystickOpen(%d) failed: %s\n", i,
+                SDL_GetError());
+    }
+}
+name = SDL_JoystickName(joystick);
+printf("Watching joystick %d: (%s)\n", SDL_JoystickInstanceID(joystick),
+       name ? name : "Unknown Joystick");
+printf("Joystick has %d axes, %d hats, %d balls, and %d buttons\n",
+       SDL_JoystickNumAxes(joystick), SDL_JoystickNumHats(joystick),
+       SDL_JoystickNumBalls(joystick), SDL_JoystickNumButtons(joystick));
+
+
+
 
     // Main loop
     while (!quit) {
@@ -101,12 +123,16 @@ int main(int argc, char* args[]) {
             if (e.type == SDL_JOYAXISMOTION) {
                 // Here you can adjust bugX and bugY based on joystick input
                 // Example:
-                // if (e.jaxis.axis == 0) { // X-axis motion
+
+                std::cout << e.jaxis.value << std::endl;
+                 if (e.jaxis.axis == 0) { // X-axis motion
+                      std::cout << "xaxis" << e.jaxis.value << std::endl;
                 //     bugX += e.jaxis.value / 1000;
-                // }
-                // if (e.jaxis.axis == 1) { // Y-axis motion
+                 }
+                 if (e.jaxis.axis == 1) { // Y-axis motion
                 //     bugY += e.jaxis.value / 1000;
-                // }
+                      std::cout << "yaxis" << e.jaxis.value << std::endl;
+                 }
             }
             // Handle mouse click
             if (e.type == SDL_MOUSEBUTTONDOWN) {
