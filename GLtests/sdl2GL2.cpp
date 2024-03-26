@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+//g++ sdl2GL2.cpp -lSDL2 -lGLU -lGL -lSDL2_image -lSDL2_mixer
+
 
 // Screen dimensions
 const int SCREEN_WIDTH = 800;
