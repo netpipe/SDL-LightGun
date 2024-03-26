@@ -8,8 +8,8 @@
 #include <GL/glut.h>
 //g++ main.cpp -lGL -lglut -lSDL2_image -lSDL2_mixer -lSDL2
 
-#define STB_IMAGE_IMPLEMENTATION    
-#include "stb_image.h"
+//#define STB_IMAGE_IMPLEMENTATION
+//#include "stb_image.h"
 
 // Screen dimensions
 const int SCREEN_WIDTH = 800;
@@ -82,37 +82,58 @@ void renderTexture(int id, float x0, float y0, float x1, float y1)
         glVertex2f(x0, y1);
     glEnd();
 }
-
-int loadImage(const char* filename)
-{
-    int w;
-    int h;
-    int comp;
-    unsigned char* image = stbi_load(filename, &w, &h, &comp, STBI_rgb_alpha);
-
-    if (image == nullptr)
-    {
-        std::cout << "cannot load " << filename << std:: endl;
+// Function to load a texture from file using SDL_image
+GLuint loadImage(const char* filename) {
+    SDL_Surface* surface = IMG_Load(filename);
+    if (!surface) {
+        std::cerr << "Failed to load texture! SDL_Error: " << IMG_GetError() << std::endl;
         return 0;
     }
-    unsigned int texID;
-    glGenTextures(1, &texID);
-    glBindTexture(GL_TEXTURE_2D, texID);
 
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-    if (comp == 3)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    else if (comp == 4)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+    GLenum textureFormat = surface->format->BytesPerPixel == 4 ? GL_RGBA : GL_RGB;
+    glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, surface->w, surface->h, 0, textureFormat, GL_UNSIGNED_BYTE, surface->pixels);
+    SDL_FreeSurface(surface);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    stbi_image_free(image);
-    return texID;
+    return textureID;
 }
+
+//int loadImage2(const char* filename)
+//{
+//    int w;
+//    int h;
+//    int comp;
+//    unsigned char* image = stbi_load(filename, &w, &h, &comp, STBI_rgb_alpha);
+
+//    if (image == nullptr)
+//    {
+//        std::cout << "cannot load " << filename << std:: endl;
+//        return 0;
+//    }
+//    unsigned int texID;
+//    glGenTextures(1, &texID);
+//    glBindTexture(GL_TEXTURE_2D, texID);
+
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+//    if (comp == 3)
+//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+//    else if (comp == 4)
+//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+//    glBindTexture(GL_TEXTURE_2D, 0);
+
+//    stbi_image_free(image);
+//    return texID;
+//}
 
 int main(int argc, char **argv)
 { 
