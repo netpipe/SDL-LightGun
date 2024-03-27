@@ -3,7 +3,10 @@
 #include <osg/Node>
 #include <osgDB/ReadFile>
 #include <osgUtil/LineSegmentIntersector>
+#include <osgGA/TrackballManipulator> // Added header
 #include <SDL2/SDL.h>
+
+//g++ main.cpp -lSDL2 -lSDL2_image -lSDL2_ttf -losg -losgUtil -losgDB -losgViewer -losgGA
 
 osg::Node* createModel(const std::string& filename) {
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(filename);
@@ -36,7 +39,7 @@ int main(int argc, char** argv) {
     }
 
     // Load COLLADA model
-    osg::Node* modelNode = createModel("path_to_your_collada_model.dae");
+    osg::Node* modelNode = createModel("test.3ds");
     if (!modelNode) {
         std::cerr << "Failed to load model!" << std::endl;
         return 1;
@@ -80,7 +83,7 @@ int main(int argc, char** argv) {
 
                         if (intersector->containsIntersections()) {
                             osgUtil::LineSegmentIntersector::Intersection intersection = *(intersector->getIntersections().begin());
-                            std::cout << "Collision detected at point: " << intersection.getWorldIntersectPoint() << std::endl;
+                         //   std::cout << "Collision detected at point: " << intersection.getWorldIntersectPoint() << std::endl;
                         } else {
                             std::cout << "No collision detected." << std::endl;
                         }
