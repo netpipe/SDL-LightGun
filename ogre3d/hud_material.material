@@ -1,0 +1,18 @@
+material HUDMaterial
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            depth_check off
+            scene_blend alpha_blend
+            ambient 1.0 1.0 1.0
+            diffuse 1.0 1.0 1.0
+            texture_unit
+            {
+                texture SindenBorderWhiteLarge.png
+            }
+        }
+    }
+}
