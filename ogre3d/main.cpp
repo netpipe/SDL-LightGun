@@ -199,29 +199,27 @@ overlay->show();
         running = false;
       }
         if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
-        int mouseX, mouseY;
-        SDL_GetMouseState(&mouseX, &mouseY);
+            int mouseX, mouseY;
+            SDL_GetMouseState(&mouseX, &mouseY);
 
-        // Convert mouse coordinates to world space
-        Ogre::Ray mouseRay = camera->getCameraToViewportRay(mouseX / static_cast<float>(windowWidth), mouseY / static_cast<float>(windowHeight));
+            // Convert mouse coordinates to world space
+            Ogre::Ray mouseRay = camera->getCameraToViewportRay(mouseX / static_cast<float>(windowWidth), mouseY / static_cast<float>(windowHeight));
 
-        // Perform ray-casting to check for intersection with the model
-        Ogre::RaySceneQuery* rayQuery = sceneManager->createRayQuery(mouseRay);
-        rayQuery->setSortByDistance(true);
+            // Perform ray-casting to check for intersection with the model
+            Ogre::RaySceneQuery* rayQuery = sceneManager->createRayQuery(mouseRay);
+            rayQuery->setSortByDistance(true);
 
-        Ogre::RaySceneQueryResult& result = rayQuery->execute();
-        for (auto& hit : result) {
-            if (hit.movable && hit.movable->getName() == cubeNode->getName()) {
-                // If the model is clicked, play animation and hide the model
-                cubeNode->setVisible(false);
-                // Play animation here
-                break; // No need to check further
+            Ogre::RaySceneQueryResult& result = rayQuery->execute();
+            for (auto& hit : result) {
+                if (hit.movable && hit.movable->getName() == cubeNode->getName()) {
+                    // If the model is clicked, play animation and hide the model
+                    cubeNode->setVisible(false);
+                    // Play animation here
+                    break; // No need to check further
+                }
             }
+            sceneManager->destroyQuery(rayQuery);
         }
-
-        sceneManager->destroyQuery(rayQuery);
-    }
-
     }
 //see
     // Update scene
@@ -229,6 +227,8 @@ overlay->show();
 
     // Render frame
     root->renderOneFrame();
+
+    SDL_Delay(1);
   }
 
   // Cleanup
