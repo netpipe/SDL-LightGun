@@ -106,8 +106,9 @@ Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 Ogre::TexturePtr hudTexture = textureManager.load("SindenBorderWhiteLarge.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 // Create a material for the HUD
-Ogre::MaterialPtr hudMaterial = Ogre::MaterialManager::getSingleton().create("HUDMaterial", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-hudMaterial->getTechnique(0)->getPass(0)->createTextureUnitState("SindenBorderWhiteLarge.png");
+//Ogre::MaterialPtr hudMaterial = Ogre::MaterialManager::getSingleton().create("HUDMaterial", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+Ogre::MaterialPtr hudMaterial = Ogre::MaterialManager::getSingleton().getByName("hud_material");
+//hudMaterial->getTechnique(0)->getPass(0)->createTextureUnitState("SindenBorderWhiteLarge.png");
 
 //    Ogre::Pass *myMatPass = Ogre::MaterialManager::getSingletonPtr()->getByName("myMaterial")->getTechnique(0)->getPass(0);
 //    myMatPass->getTextureUnitState(0)->setTexture( hudMaterial );
