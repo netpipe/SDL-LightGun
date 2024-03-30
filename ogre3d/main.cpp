@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
 
   // Create scene
   Ogre::SceneManager* sceneManager = root->createSceneManager();
-sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+//sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
 sceneManager->setShadowTextureSize(1024); // Set shadow map resolution
 sceneManager->setShadowTextureCount(1);   // Set the number of shadow maps
 sceneManager->setShadowCasterRenderBackFaces(false);
