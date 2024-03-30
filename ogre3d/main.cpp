@@ -104,20 +104,17 @@ Ogre::Plane plane(Vector3::UNIT_Y, -10);
 // Load the HUD texture
 Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 Ogre::TexturePtr hudTexture = textureManager.load("SindenBorderWhiteLarge.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-// Create a material for the HUD
+//
+//// Create a material for the HUD
 Ogre::MaterialPtr hudMaterial = Ogre::MaterialManager::getSingleton().create("HUDMaterial", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 hudMaterial->getTechnique(0)->getPass(0)->createTextureUnitState("SindenBorderWhiteLarge.png");
-
-//    Ogre::Pass *myMatPass = Ogre::MaterialManager::getSingletonPtr()->getByName("myMaterial")->getTechnique(0)->getPass(0);
-//    myMatPass->getTextureUnitState(0)->setTexture( hudMaterial );
-
-
+//
 Ogre::OverlaySystem* pOverlaySystem = OGRE_NEW Ogre::OverlaySystem();
 sceneManager->addRenderQueueListener(pOverlaySystem);
-// Create an overlay for the HUD
+//// Create an overlay for the HUD
 Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
 Ogre::Overlay* overlay = overlayManager.create("HUDOverlay");
+//Ogre::Overlay* overlay = Ogre::OverlayManager::getSingleton().getByName("myMaterial");
 
 //// Create a panel to display the HUD texture
 Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "HUDPanel"));
@@ -171,6 +168,7 @@ overlay->show();
 //// Attach the quad to the root scene node
 //Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 //rootNode->attachObject(fullscreenQuad);
+
 //rootNode->setVisible(true);
 
 
