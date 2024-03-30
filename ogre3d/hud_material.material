@@ -11,7 +11,7 @@ material HUDMaterial
             diffuse 1.0 1.0 1.0
             texture_unit
             {
-                texture SindenBorderWhiteLarge.png
+                texture SindenBorderWhiteLarge_Wide.png
             }
         }
     }

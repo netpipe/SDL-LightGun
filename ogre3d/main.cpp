@@ -125,7 +125,7 @@ Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(overlayMana
 panel->setMaterialName("HUDMaterial");
 panel->setMetricsMode(Ogre::GMM_PIXELS);
 panel->setPosition(0, 0);
-panel->setDimensions(300, 400); // Set dimensions according to your HUD texture size
+panel->setDimensions(800, 600); // Set dimensions according to your HUD texture size
 
 // Add the panel to the overlay
 overlay->add2D(panel);
