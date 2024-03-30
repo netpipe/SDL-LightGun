@@ -60,9 +60,23 @@ int main(int argc, char* argv[]) {
   Ogre::Viewport* viewport = ogreWindow->addViewport(camera);
   viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 
-//    Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
-//  Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-//  cubeNode->attachObject(cubeEntity);
+  Ogre::String lNameOfResourceGroup = "Mission 1 : Deliver Tom";
+  		Ogre::ResourceGroupManager& lRgMgr = Ogre::ResourceGroupManager::getSingleton();
+		lRgMgr.createResourceGroup(lNameOfResourceGroup);
+		Ogre::String lDirectoryToLoad = "./";
+		bool lIsRecursive = false;
+		lRgMgr.addResourceLocation(lDirectoryToLoad, "FileSystem", lNameOfResourceGroup, lIsRecursive);
+
+		// The function 'initialiseResourceGroup' parses scripts if any in the locations.
+		lRgMgr.initialiseResourceGroup(lNameOfResourceGroup);
+
+		// Files that can be loaded are loaded.
+		lRgMgr.loadResourceGroup(lNameOfResourceGroup);
+
+
+    Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
+  Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+  cubeNode->attachObject(cubeEntity);
 
 Ogre::Plane plane(Vector3::UNIT_Y, -10);
     Ogre::MeshManager::getSingleton().createPlane(
