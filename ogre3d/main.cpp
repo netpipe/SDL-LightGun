@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
   Ogre::RenderSystem* renderSystem = root->getRenderSystemByName("OpenGL Rendering Subsystem");
   root->setRenderSystem(renderSystem);
   root->initialise(false);
+    //renderSystem->setCapability(Ogre::RSC_SHADOWS);
 
   SDL_SysWMinfo sdlInfo;
   SDL_VERSION(&sdlInfo.version);
@@ -63,7 +64,10 @@ int main(int argc, char* argv[]) {
 
   // Create scene
   Ogre::SceneManager* sceneManager = root->createSceneManager();
-
+sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+sceneManager->setShadowTextureSize(1024); // Set shadow map resolution
+sceneManager->setShadowTextureCount(1);   // Set the number of shadow maps
+sceneManager->setShadowCasterRenderBackFaces(false);
       // without light we would just get a black screen
     Ogre::Light* light = sceneManager->createLight("MainLight");
     Ogre::SceneNode* lightNode = sceneManager->getRootSceneNode()->createChildSceneNode();
@@ -81,7 +85,8 @@ int main(int argc, char* argv[]) {
 
   Ogre::Viewport* viewport = ogreWindow->addViewport(camera);
   viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
-
+  //  sceneManager->setAmbientLight(ColourValue(0, 0, 0));
+  //  sceneManager->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
   //https://forums.ogre3d.org/viewtopic.php?t=64514
   Ogre::String lNameOfResourceGroup = "Mission 1 : Deliver Tom";
   		Ogre::ResourceGroupManager& lRgMgr = Ogre::ResourceGroupManager::getSingleton();
@@ -213,7 +218,8 @@ overlay->show();
             for (auto& hit : result) {
                 if (hit.movable && hit.movable->getParentSceneNode() == cubeNode) {
                     // If the model is clicked, play animation and hide the model
-                    cubeNode->setVisible(false);
+                   // cubeNode->setVisible(false);
+                    cubeNode->flipVisibility(true);
                     // Play animation here
                     break; // No need to check further
                 }
