@@ -211,7 +211,7 @@ overlay->show();
 
             Ogre::RaySceneQueryResult& result = rayQuery->execute();
             for (auto& hit : result) {
-                if (hit.movable && hit.movable->getName() == cubeNode->getName()) {
+                if (hit.movable && hit.movable->getParentSceneNode() == cubeNode) {
                     // If the model is clicked, play animation and hide the model
                     cubeNode->setVisible(false);
                     // Play animation here
