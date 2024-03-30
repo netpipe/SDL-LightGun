@@ -4,6 +4,8 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/LineSegmentIntersector>
 #include <osgGA/TrackballManipulator> // Added header
+#include <osgGA/FirstPersonManipulator> // Added header
+
 #include <SDL2/SDL.h>
 
 //g++ main.cpp -lSDL2 -lSDL2_image -lSDL2_ttf -losg -losgUtil -losgDB -losgViewer -losgGA
@@ -54,15 +56,39 @@ int main(int argc, char** argv) {
 
     // Set up the viewer
     viewer.setSceneData(root);
-    viewer.setCameraManipulator(new osgGA::TrackballManipulator);
-
+    viewer.getCamera()->setDrawBuffer(GL_BACK);
+    viewer.getCamera()->setReadBuffer(GL_BACK);
+    viewer.setCameraManipulator(new osgGA::FirstPersonManipulator);
+   //  viewer.realize();
     // Main loop
     while (!viewer.done()) {
-        // Render the scene
-        viewer.frame();
+      //     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+       // osg::Vec3d moveDirection = keyboardEventHandler->getMoveDirection();
+      osg::Vec3d moveDirection = osg::Vec3d(0,0,0.1);
+      osg::Matrixd viewMatrix = viewer.getCameraManipulator()->getInverseMatrix();
+      osg::Vec3d forwardVector = -osg::Matrixd::transform3x3(osg::Vec3d(0.0, 0.0, -1.0), viewMatrix);
+      osg::Vec3d strafeVector = osg::Matrixd::transform3x3(osg::Vec3d(1.0, 0.0, 0.0), viewMatrix);
+
+      osg::Vec3d eye = viewer.getCameraManipulator()->getMatrix().getTrans();
+      eye += forwardVector * moveDirection.z() * 0.1; // Move forward/backward
+      eye += strafeVector * moveDirection.x() * 0.1; // Move left/right
+
+      osg::Vec3d center = eye + forwardVector;
+      osg::Vec3d up = osg::Vec3d(0.0, 0.0, 1.0);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+      osg::Matrixd viewMatrixNew;
+      viewMatrixNew.makeLookAt(eye, center, up);
+
+      viewer.getCameraManipulator()->setByMatrix(viewMatrixNew);
+    //  viewer.getCameraManipulator()->setHomePosition(viewMatrixNew);
+        // Render the scene
+         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        viewer.frame();
+  //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Swap buffers
-        SDL_GL_SwapWindow(window);
+
 
         // Handle SDL events
         SDL_Event event;
@@ -89,10 +115,34 @@ int main(int argc, char** argv) {
                         }
                     }
                     break;
+            case SDL_KEYDOWN:
+                // Camera movement with WASD keys
+                switch (event.key.keysym.sym) {
+                    case SDLK_w: // Move forward
+                    //    viewer.getCameraManipulator()->forward(0.1);
+                        break;
+                    case SDLK_s: // Move backward
+                    //    viewer.getCameraManipulator()->backward(0.1);
+                        break;
+                    case SDLK_a: // Strafe left
+                    //    viewer.getCameraManipulator()->left(0.1);
+                        break;
+                    case SDLK_d: // Strafe right
+                    //    viewer.getCameraManipulator()->right(0.1);
+                        break;
+                    default:
+                        break;
+                }
+                break;
                 default:
                     break;
             }
         }
+
+        SDL_Delay(10);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+           SDL_GL_SwapWindow(window);
     }
 
     // Cleanup
