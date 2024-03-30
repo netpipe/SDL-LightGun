@@ -45,7 +45,6 @@ int main(int argc, char* argv[]) {
   Ogre::RenderSystem* renderSystem = root->getRenderSystemByName("OpenGL Rendering Subsystem");
   root->setRenderSystem(renderSystem);
   root->initialise(false);
-    //renderSystem->setCapability(Ogre::RSC_SHADOWS);
 
   SDL_SysWMinfo sdlInfo;
   SDL_VERSION(&sdlInfo.version);
@@ -64,10 +63,7 @@ int main(int argc, char* argv[]) {
 
   // Create scene
   Ogre::SceneManager* sceneManager = root->createSceneManager();
-//sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
-sceneManager->setShadowTextureSize(1024); // Set shadow map resolution
-sceneManager->setShadowTextureCount(1);   // Set the number of shadow maps
-sceneManager->setShadowCasterRenderBackFaces(false);
+
       // without light we would just get a black screen
     Ogre::Light* light = sceneManager->createLight("MainLight");
     Ogre::SceneNode* lightNode = sceneManager->getRootSceneNode()->createChildSceneNode();
