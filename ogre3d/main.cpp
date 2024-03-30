@@ -7,6 +7,12 @@
 #include <OgreViewport.h>
 #include <SDL2/SDL_syswm.h>
 #include <OgreMeshManager.h>
+#include <OgreTextureManager.h>
+#include <OgreOverlayManager.h>
+#include <OgreOverlayContainer.h>
+#include <Ogre.h>
+#include <OgreOverlay.h>
+#include <OgreOverlaySystem.h>
 
 using namespace Ogre;
 int main(int argc, char* argv[]) {
@@ -75,6 +81,8 @@ int main(int argc, char* argv[]) {
 		lRgMgr.loadResourceGroup(lNameOfResourceGroup);
 
 
+
+
     Ogre::Entity* cubeEntity = sceneManager->createEntity("test.mesh");
   Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
   cubeNode->attachObject(cubeEntity);
@@ -90,6 +98,36 @@ Ogre::Plane plane(Vector3::UNIT_Y, -10);
 
                 Entity* groundEntity = sceneManager->createEntity("ground");
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
+
+
+// Load the HUD texture
+Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
+Ogre::TexturePtr hudTexture = textureManager.load("SindenBorderWhiteLarge_Wide.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+// Create a material for the HUD
+Ogre::MaterialPtr hudMaterial = Ogre::MaterialManager::getSingleton().create("HUDMaterial", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+hudMaterial->getTechnique(0)->getPass(0)->createTextureUnitState("SindenBorderWhiteLarge_Wide.png");
+
+Ogre::OverlaySystem* pOverlaySystem = OGRE_NEW Ogre::OverlaySystem();
+sceneManager->addRenderQueueListener(pOverlaySystem);
+// Create an overlay for the HUD
+Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+Ogre::Overlay* overlay = overlayManager.create("HUDOverlay");
+
+//// Create a panel to display the HUD texture
+Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "HUDPanel"));
+panel->setMaterialName("HUDMaterial");
+panel->setMetricsMode(Ogre::GMM_PIXELS);
+panel->setPosition(0, 0);
+panel->setDimensions(100, 100); // Set dimensions according to your HUD texture size
+
+// Add the panel to the overlay
+overlay->add2D(panel);
+
+// Show the overlay
+overlay->show();
+
+
   // Main loop
   bool running = true;
   while (running) {
