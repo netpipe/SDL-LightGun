@@ -1,10 +1,11 @@
-#include <SDL.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <Horde3D.h>
+#include "Horde3DUtils.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-
+#include <GL/gl.h>
 // Screen dimensions
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
@@ -12,6 +13,7 @@ const int SCREEN_HEIGHT = 600;
 // Bug dimensions
 const float BUG_WIDTH = 50.0f;
 const float BUG_HEIGHT = 50.0f;
+H3DNode      cam;
 
 // Function to generate a random number within a range
 int random(int min, int max) {
@@ -31,8 +33,9 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
+        int _renderInterface = H3DRenderDevice::OpenGL2;
     // Initialize Horde3D
-    if (!h3dInit(nullptr)) {
+    if (!h3dInit( ( H3DRenderDevice::List ) _renderInterface ) ) {
         std::cerr << "Horde3D could not initialize!" << std::endl;
         return 1;
     }
@@ -63,7 +66,7 @@ int main(int argc, char* args[]) {
     std::srand(std::time(nullptr));
 
     // Create bug node
-    H3DNode bugNode = h3dAddModelNode(H3DRootNode, "models/bug.obj");
+    H3DNode bugNode = h3dAddModelNode(H3DRootNode, "test.3ds",H3DResTypes::SceneGraph);
 
     // Main loop flag
     bool quit = false;
@@ -71,6 +74,7 @@ int main(int argc, char* args[]) {
     // Game variables
     float bugX = random(0, SCREEN_WIDTH - BUG_WIDTH);
     float bugY = random(0, SCREEN_HEIGHT - BUG_HEIGHT);
+	cam = h3dAddCameraNode( H3DRootNode, "Camera", 400 );
 
     // Main loop
     while (!quit) {
@@ -87,14 +91,14 @@ int main(int argc, char* args[]) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Set up view and projection matrices
-        h3dutPerspectiveMatrix(gProjMat, 45.0f, SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
-        h3dSetMatrix(H3DRenderContext::CamProjMat, gProjMat);
+      //  h3dutPerspectiveMatrix(gProjMat, 45.0f, SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
+      //  h3dSetMatrix(H3DRenderContext::CamProjMat, gProjMat);
 
         // Update bug position
         h3dSetNodeTransform(bugNode, bugX, 0, bugY, 0, 0, 0, 1, 1, 1);
 
         // Render scene
-        h3dRender(H3DRenderContext::AllNodes);
+        h3dRender(cam);
 
         // Update screen
         SDL_GL_SwapWindow(window);

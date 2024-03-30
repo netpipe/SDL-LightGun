@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Flow" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Linux Build">
+				<Option platforms="Unix;Mac;" />
+				<Option output="./flow" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/flow-linux/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="`pkg-config --cflags OGRE`" />
+					<Add option="-fexceptions" />
+					<Add directory="./ogre/Samples/Common/include" />
+					<Add directory="/usr/local/include/OGRE" />
+					<Add directory="/usr/include/OGRE" />
+					<Add directory="/usr/include/CEGUI" />
+					<Add directory="/usr/include/OIS" />
+					<Add directory="/usr/include/tinyxml" />
+					<Add directory="/usr/include/bullet" />
+					<Add directory="./ogre/OgreMain/include" />
+					<Add directory="./ogre/include" />
+					<Add directory="./ogre/Components/Overlay/include/" />
+					<Add directory="./OIS/includes" />
+					<Add directory="./cegui/cegui/include" />
+					<Add directory="./ogre/Components/Bites/include/" />
+					<Add directory="./Horde3D/Horde3D/Source/Horde3DEngine" />
+					<Add directory="./Horde3D/Horde3D/Bindings/C++/" />
+				</Compiler>
+				<Linker>
+					<Add directory="/home/fish/Flow/bullet-2.74/src/.libs" />
+					<Add directory="/home/fish/Flow/bullet-2.74/Extras" />
+					<Add directory="./ogre/lib" />
+					<Add directory="./OIS" />
+					<Add directory="./cegui/lib" />
+					<Add directory="./Horde3D/Horde3D/Source/Horde3DEngine" />
+				</Linker>
+			</Target>
+			<Target title="Windows Build">
+				<Option platforms="Windows;" />
+				<Option output="Flow" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="H:/flow" />
+				<Option object_output="obj/flow-win/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-O" />
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-fident" />
+					<Add option="-DWIN32" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-DNDEBUG" />
+					<Add directory="H:/App/bullet-2.74/src" />
+					<Add directory="H:/App/OgreSDK/include" />
+					<Add directory="H:/App/OgreSDK/samples/include" />
+					<Add directory="H:/App/OgreSDK/samples/refapp/include" />
+					<Add directory="H:/App/OgreSDK/include/CEGUI" />
+					<Add directory="H:/App/OgreSDK/include/OIS" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add library="OgreGUIRenderer" />
+					<Add library="GIMPACTUtils" />
+					<Add directory="H:/App/OgreSDK/lib" />
+					<Add directory="H:/App/OgreSDK/bin/Debug" />
+					<Add directory="H:/App/OgreSDK/bin/Release" />
+					<Add directory="H:/App/bullet-2.74/out/release8/libs" />
+				</Linker>
+			</Target>
+		</Build>
+		<Linker>
+			<Add library="Horde3D" />
+			<Add library="SDL2_mixer" />
+			<Add library="SDL2" />
+			<Add library="SDL2_image" />
+			<Add library="GL" />
+		</Linker>
+		<Unit filename="main.cpp" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
