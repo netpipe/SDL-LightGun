@@ -13,6 +13,8 @@
 #include <Ogre.h>
 #include <OgreOverlay.h>
 #include <OgreOverlaySystem.h>
+#include <OgreCamera.h>
+#include <OgreSceneNode.h>
 
 using namespace Ogre;
 
@@ -61,9 +63,15 @@ int main(int argc, char* argv[]) {
     lightNode->setPosition(0, 10, 15);
     lightNode->attachObject(light);
   // Create camera and viewport
+      SceneNode* camNode = sceneManager->getRootSceneNode()->createChildSceneNode();
   Ogre::Camera* camera = sceneManager->createCamera("Camera");
-//  camera->setPosition(Ogre::Vector3(0, 0, 50));
- // camera->lookAt(Ogre::Vector3(0, 0, 0));
+  camNode->setPosition(Ogre::Vector3(0, 0, 50));
+  camNode->lookAt(Ogre::Vector3(0, 0, 0), Node::TransformSpace::TS_WORLD);
+
+      camera->setNearClipDistance(5);
+    camNode->attachObject(camera);
+
+
   Ogre::Viewport* viewport = ogreWindow->addViewport(camera);
   viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 
@@ -186,7 +194,7 @@ overlay->show();
     }
 //see
     // Update scene
-  //  cubeNode->yaw(Ogre::Degree(0.1f));
+    cubeNode->yaw(Ogre::Degree(0.1f));
 
     // Render frame
     root->renderOneFrame();
