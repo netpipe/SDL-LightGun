@@ -18,6 +18,13 @@
 
 using namespace Ogre;
 
+int windowWidth=800;
+int windowHeight=600;
+
+void handleMouseClick(const SDL_Event& event, Ogre::SceneManager* sceneManager, Ogre::Entity* modelEntity) {
+
+}
+
 int main(int argc, char* argv[]) {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -26,7 +33,7 @@ int main(int argc, char* argv[]) {
   }
 
   // Create SDL window
-  SDL_Window* window = SDL_CreateWindow("SDL2 & Ogre3D Demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+  SDL_Window* window = SDL_CreateWindow("SDL2 & Ogre3D Demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
   if (window == nullptr) {
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
     return 1;
@@ -51,7 +58,7 @@ int main(int argc, char* argv[]) {
   //Ogre::NameValuePairList params;
   params["externalWindowHandle"] = Ogre::StringConverter::toString((size_t)sdlInfo.info.x11.window);
  // params["externalWindowHandle"] = Ogre::StringConverter::toString((size_t)window);
-  Ogre::RenderWindow* ogreWindow = root->createRenderWindow("OgreWindow", 800, 600, false, &params);
+  Ogre::RenderWindow* ogreWindow = root->createRenderWindow("OgreWindow", windowWidth, windowHeight, false, &params);
 
 
   // Create scene
@@ -191,6 +198,30 @@ overlay->show();
       if (event.type == SDL_QUIT) {
         running = false;
       }
+        if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+
+        // Convert mouse coordinates to world space
+        Ogre::Ray mouseRay = camera->getCameraToViewportRay(mouseX / static_cast<float>(windowWidth), mouseY / static_cast<float>(windowHeight));
+
+        // Perform ray-casting to check for intersection with the model
+        Ogre::RaySceneQuery* rayQuery = sceneManager->createRayQuery(mouseRay);
+        rayQuery->setSortByDistance(true);
+
+        Ogre::RaySceneQueryResult& result = rayQuery->execute();
+        for (auto& hit : result) {
+            if (hit.movable && hit.movable->getName() == cubeNode->getName()) {
+                // If the model is clicked, play animation and hide the model
+                cubeNode->setVisible(false);
+                // Play animation here
+                break; // No need to check further
+            }
+        }
+
+        sceneManager->destroyQuery(rayQuery);
+    }
+
     }
 //see
     // Update scene
