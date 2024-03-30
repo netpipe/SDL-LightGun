@@ -6,7 +6,9 @@
 #include <OgreCamera.h>
 #include <OgreViewport.h>
 #include <SDL2/SDL_syswm.h>
+#include <OgreMeshManager.h>
 
+using namespace Ogre;
 int main(int argc, char* argv[]) {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -42,12 +44,15 @@ int main(int argc, char* argv[]) {
  // params["externalWindowHandle"] = Ogre::StringConverter::toString((size_t)window);
   Ogre::RenderWindow* ogreWindow = root->createRenderWindow("OgreWindow", 800, 600, false, &params);
 
+
   // Create scene
   Ogre::SceneManager* sceneManager = root->createSceneManager();
-  //Ogre::Entity* cubeEntity = sceneManager->createEntity("Cube", "./test.3ds");
- // Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
- // cubeNode->attachObject(cubeEntity);
 
+      // without light we would just get a black screen
+    Ogre::Light* light = sceneManager->createLight("MainLight");
+    Ogre::SceneNode* lightNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+    lightNode->setPosition(0, 10, 15);
+    lightNode->attachObject(light);
   // Create camera and viewport
   Ogre::Camera* camera = sceneManager->createCamera("Camera");
 //  camera->setPosition(Ogre::Vector3(0, 0, 50));
@@ -55,6 +60,21 @@ int main(int argc, char* argv[]) {
   Ogre::Viewport* viewport = ogreWindow->addViewport(camera);
   viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 
+//    Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
+//  Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+//  cubeNode->attachObject(cubeEntity);
+
+Ogre::Plane plane(Vector3::UNIT_Y, -10);
+    Ogre::MeshManager::getSingleton().createPlane(
+            "ground", Ogre::RGN_DEFAULT,
+            plane,
+            1500, 1500, 20, 20,
+            true,
+            1, 5, 5,
+            Vector3::UNIT_Z);
+
+                Entity* groundEntity = sceneManager->createEntity("ground");
+    sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
   // Main loop
   bool running = true;
   while (running) {
