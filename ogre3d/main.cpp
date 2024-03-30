@@ -14,6 +14,8 @@
 #include <OgreOverlay.h>
 #include <OgreOverlaySystem.h>
 
+//https://forums.ogre3d.org/viewtopic.php?t=66897 for getting alpha images
+
 using namespace Ogre;
 
 int main(int argc, char* argv[]) {
