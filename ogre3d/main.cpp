@@ -119,13 +119,57 @@ Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(overlayMana
 panel->setMaterialName("HUDMaterial");
 panel->setMetricsMode(Ogre::GMM_PIXELS);
 panel->setPosition(0, 0);
-panel->setDimensions(100, 100); // Set dimensions according to your HUD texture size
+panel->setDimensions(200, 200); // Set dimensions according to your HUD texture size
 
 // Add the panel to the overlay
 overlay->add2D(panel);
 
 // Show the overlay
 overlay->show();
+
+// Assuming you have initialized Ogre and have access to the SceneManager
+
+
+
+
+
+
+// Create a fullscreen quad
+Ogre::ManualObject* fullscreenQuad = sceneManager->createManualObject("FullscreenQuad");
+fullscreenQuad->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+// Define vertices for a fullscreen quad (spanning the entire screen)
+fullscreenQuad->position(-1, 1, 0); // Top left
+fullscreenQuad->textureCoord(0, 0); // Texture coordinate (top left)
+
+fullscreenQuad->position(1, 1, 0); // Top right
+fullscreenQuad->textureCoord(1, 0); // Texture coordinate (top right)
+
+fullscreenQuad->position(-1, -1, 0); // Bottom left
+fullscreenQuad->textureCoord(0, 1); // Texture coordinate (bottom left)
+
+fullscreenQuad->position(1, -1, 0); // Bottom right
+fullscreenQuad->textureCoord(1, 1); // Texture coordinate (bottom right)
+
+// Define the faces of the quad
+fullscreenQuad->quad(0, 1, 3, 2);
+
+// End definition
+fullscreenQuad->end();
+
+// Create a material for the fullscreen quad
+Ogre::MaterialPtr fullscreenMaterial = Ogre::MaterialManager::getSingleton().create("FullscreenMaterial", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+fullscreenMaterial->getTechnique(0)->getPass(0)->createTextureUnitState("SindenBorderWhiteLarge_Wide.png");
+
+// Attach the material to the fullscreen quad
+fullscreenQuad->setMaterialName(0,"FullscreenMaterial");
+
+// Attach the quad to the root scene node
+Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+rootNode->attachObject(fullscreenQuad);
+
+
+
 
 
   // Main loop
