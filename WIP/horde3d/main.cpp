@@ -14,7 +14,7 @@ const int SCREEN_HEIGHT = 600;
 const float BUG_WIDTH = 50.0f;
 const float BUG_HEIGHT = 50.0f;
 H3DNode      cam;
-
+SDL_GLContext context;
 // Function to generate a random number within a range
 int random(int min, int max) {
     return min + rand() % (max - min + 1);
@@ -33,12 +33,7 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
-        int _renderInterface = H3DRenderDevice::OpenGL2;
-    // Initialize Horde3D
-    if (!h3dInit( ( H3DRenderDevice::List ) _renderInterface ) ) {
-        std::cerr << "Horde3D could not initialize!" << std::endl;
-        return 1;
-    }
+
 
     // Create window
     SDL_Window* window = SDL_CreateWindow("Bug Squish", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
@@ -46,6 +41,13 @@ int main(int argc, char* args[]) {
         std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;
     }
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    context = SDL_GL_CreateContext(window);
+    SDL_GL_MakeCurrent(window, context);
+
 
     // Create OpenGL context
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
@@ -53,9 +55,15 @@ int main(int argc, char* args[]) {
         std::cerr << "OpenGL context could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;
     }
-
+        int _renderInterface = H3DRenderDevice::OpenGL2;
+    // Initialize Horde3D
+  //  if (!h3dInit( ( H3DRenderDevice::List ) _renderInterface ) ) {
+    if (!h3dInit( H3DRenderDevice::OpenGL2 )) {
+        std::cerr << "Horde3D could not initialize!" << std::endl;
+        return 1;
+    }
     // Load background music
-    Mix_Music* backgroundMusic = Mix_LoadMUS("background_music.mp3");
+    Mix_Music* backgroundMusic = Mix_LoadMUS("music.mp3");
     if (!backgroundMusic) {
         std::cerr << "Failed to load background music! SDL_mixer Error: " << Mix_GetError() << std::endl;
         return 1;
