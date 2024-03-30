@@ -60,6 +60,7 @@ int main(int argc, char* argv[]) {
   Ogre::Viewport* viewport = ogreWindow->addViewport(camera);
   viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 
+  //https://forums.ogre3d.org/viewtopic.php?t=64514
   Ogre::String lNameOfResourceGroup = "Mission 1 : Deliver Tom";
   		Ogre::ResourceGroupManager& lRgMgr = Ogre::ResourceGroupManager::getSingleton();
 		lRgMgr.createResourceGroup(lNameOfResourceGroup);
@@ -74,7 +75,7 @@ int main(int argc, char* argv[]) {
 		lRgMgr.loadResourceGroup(lNameOfResourceGroup);
 
 
-    Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
+    Ogre::Entity* cubeEntity = sceneManager->createEntity("test.mesh");
   Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
   cubeNode->attachObject(cubeEntity);
 
