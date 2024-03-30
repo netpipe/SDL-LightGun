@@ -15,22 +15,86 @@
 #include <OgreOverlaySystem.h>
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
-
+#include <SDL2/SDL_mixer.h>
+#include <iostream>
 using namespace Ogre;
 
-int windowWidth=800;
-int windowHeight=600;
+//int windowWidth=1024;
+//int windowHeight=768;
+int windowWidth=1920;
+int windowHeight=1080;
 
-void handleMouseClick(const SDL_Event& event, Ogre::SceneManager* sceneManager, Ogre::Entity* modelEntity) {
+// Bug dimensions
+const int BUG_WIDTH = 50;
+const int BUG_HEIGHT = 50;
 
+bool isFullScreen = false; // false=fullscreen
+
+bool autoload = false;
+int clipsize = 5;
+bool reload = false;
+
+SDL_DisplayMode dm;
+
+#define SINDEN
+
+// Shot mark structure
+struct ShotMark
+{
+    int x;
+    int y;
+    int lifespan; // Lifespan in milliseconds
+    Uint32 spawnTime; // Time when the shot mark was spawned
+};
+
+void toggleFullScreen(SDL_Window* window, bool currentState)
+{
+    isFullScreen = !currentState;
+
+    SDL_SetWindowFullscreen(window, !currentState);
+    SDL_ShowCursor(currentState);
 }
+
 
 int main(int argc, char* argv[]) {
   // Initialize SDL
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+
+  if (SDL_GetCurrentDisplayMode(0, &dm) == 0) {
+    windowWidth = dm.w;
+    windowHeight = dm.h;
+} else {
+    // Failed to get screen resolution
+}
+
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
     return 1;
   }
+    // Initialize SDL_mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    {
+        std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << std::endl;
+        return 1;
+    }
+
+    // Load background music
+    Mix_Music* backgroundMusic = Mix_LoadMUS("music.mp3");
+    if (!backgroundMusic)
+    {
+        std::cerr << "Failed to load background music! SDL_mixer Error: " << Mix_GetError() << std::endl;
+        return 1;
+    }
+
+    // Play background music
+    Mix_PlayMusic(backgroundMusic, -1); // -1 for looping
+
+        // Load sound effects
+    Mix_Chunk* squishSound = Mix_LoadWAV("squish.wav");
+    if (!squishSound)
+    {
+        std::cerr << "Failed to load squish sound effect! SDL_mixer Error: " << Mix_GetError() << std::endl;
+        return 1;
+    }
 
   // Create SDL window
   SDL_Window* window = SDL_CreateWindow("SDL2 & Ogre3D Demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
@@ -38,6 +102,15 @@ int main(int argc, char* argv[]) {
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
     return 1;
   }
+
+      bool cursortoggle = true;
+    toggleFullScreen(window,isFullScreen);
+    SDL_ShowCursor(SDL_ENABLE);
+
+        // Seed random number generator
+    std::srand(std::time(nullptr));
+
+        int shotsFired = 0;
 
   // Initialize Ogre
   Ogre::Root* root = new Ogre::Root();
@@ -145,7 +218,7 @@ Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(overlayMana
 panel->setMaterialName("HUDMaterial");
 panel->setMetricsMode(Ogre::GMM_PIXELS);
 panel->setPosition(0, 0);
-panel->setDimensions(800, 600); // Set dimensions according to your HUD texture size
+panel->setDimensions(windowWidth, windowHeight); // Set dimensions according to your HUD texture size
 
 // Add the panel to the overlay
 overlay->add2D(panel);
@@ -226,6 +299,99 @@ overlay->show();
             }
             sceneManager->destroyQuery(rayQuery);
         }
+                   switch( event.type )
+            {
+                case SDL_KEYDOWN:
+
+
+                switch( event.key.keysym.sym )
+                {
+                    case SDLK_ESCAPE:
+                        running = false;
+                        break;
+                    case SDLK_1:
+                        SDL_ShowCursor(!cursortoggle);
+                        cursortoggle=!cursortoggle;
+                        SDL_Delay(10);
+                        break;
+                    case SDLK_5:
+                        reload=true;
+                        autoload=!autoload;
+                        std::cerr << autoload << "test" << std::endl;
+                        if (autoload)
+                        {
+                            std::cerr << "autoloadon" << std::endl;
+                        };
+                        SDL_Delay(100);
+                        break;
+                }
+            }
+            // Handle joystick axis motion
+            if (event.type == SDL_JOYAXISMOTION)
+            {
+                // Here you can adjust bugX and bugY based on joystick input
+                // Example:
+                // if (e.jaxis.axis == 0) { // X-axis motion
+                //     bugX += e.jaxis.value / 1000;
+                // }
+                // if (e.jaxis.axis == 1) { // Y-axis motion
+                //     bugY += e.jaxis.value / 1000;
+                // }
+            }
+//            // Handle mouse click
+//            if (e.type == SDL_MOUSEBUTTONDOWN || reload)
+//            {
+//                if (e.button.button == SDL_BUTTON_LEFT)
+//                {
+//                    // Left mouse button
+//                    int mouseX, mouseY;
+//                    SDL_GetMouseState(&mouseX, &mouseY);
+//                    mouseY = SCREEN_HEIGHT - mouseY;
+//                    SDL_Rect mouseRect = { mouseX, mouseY, 1, 1 };
+//                    SDL_Rect bugRect = { bugX, bugY, BUG_WIDTH, BUG_HEIGHT };
+//                    if (shotsFired <= clipsize)
+//                    {
+//                        if (checkCollision(bugRect, mouseRect))
+//                        {
+//                            // Bug squashed!
+//                            std::cout << "Bug squashed!" << std::endl;
+//                            Mix_PlayChannel(-1, squishSound, 0); // Play squish sound
+//                            bugX = std::rand() % (SCREEN_WIDTH - BUG_WIDTH); // Generate new bug position
+//                            bugY = std::rand() % (SCREEN_HEIGHT - BUG_HEIGHT);
+//                        }
+//                        else
+//                        {
+//                            // Shot missed
+//                            std::cout << "Missed shot!" << std::endl;
+//                            // Draw shot mark
+//                            ShotMark newShotMark = { mouseX, mouseY, 1000, SDL_GetTicks() }; // 10 seconds lifespan
+//                            shotMarks.push_back(newShotMark);
+//                        }
+//                        // Increment shots fired
+//                        shotsFired++;
+//                    }
+//                    else
+//                    {
+//                        // Check if reload is needed
+//                        if (shotsFired >= clipsize && autoload)
+//                        {
+//                            std::cout << "Reloaded!" << std::endl;
+//                            shotsFired = 0; // Reset shots fired.
+//                        };
+//                        std::cout << "reload!" << std::endl;
+//                        Mix_PlayChannel(-1, reloadSound, 0); // Play squish sound
+//                    }
+//                }
+//                else if (e.button.button == SDL_BUTTON_RIGHT || reload)
+//                {
+//                    // Right mouse button for reload
+//                    std::cout << "Manual reload!" << std::endl;
+//                    shotsFired = 0; // Reset shots fired
+//                    Mix_PlayChannel(-1, reloadSound, 0); // Play squish sound
+//                }
+//                reload=false;
+//            }
+      //  }
     }
 //see
     // Update scene
