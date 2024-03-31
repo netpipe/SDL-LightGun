@@ -30,6 +30,10 @@
 					<Add directory="./OIS/includes" />
 					<Add directory="./cegui/cegui/include" />
 					<Add directory="./ogre/Components/Bites/include/" />
+					<Add directory="/usr/local/include/OGRE/Overlay" />
+					<Add directory="/usr/local/include/OGRE/Bites" />
+					<Add directory="/usr/include/OGRE/Overlay" />
+					<Add directory="/usr/include/OGRE/Bites" />
 				</Compiler>
 				<Linker>
 					<Add directory="/home/fish/Flow/bullet-2.74/src/.libs" />
