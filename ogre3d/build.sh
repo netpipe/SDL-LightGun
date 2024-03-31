@@ -6,5 +6,5 @@ g++ main.cpp -lOgreMain -lSDL2_mixer -lSDL2 -lSDL2_image -lGL -lOgreOverlay -L./
 #-I/usr/include/OGRE/Overlay
 #-I/usr/include/OGRE/Bites
 
-export LD_LIBRARY_PATH=$pwd/ogre/lib
+export LD_LIBRARY_PATH=$PWD/ogre/lib
 ./flow
