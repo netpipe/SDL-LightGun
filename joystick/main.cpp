@@ -140,6 +140,7 @@ printf("Joystick has %d axes, %d hats, %d balls, and %d buttons\n",
                           // Process the normalized value, e.g., adjust aim horizontally
                           int lightgunX = static_cast<int>((normalizedX + 1.0f) * 0.5f * windowWidth);
 printf("Joystick %i\n",lightgunX);
+  bugX=lightgunX;
                 }
                       else if (e.jaxis.axis == 1) {
                           // Y-axis motion
@@ -151,6 +152,7 @@ printf("Joystick %i\n",lightgunX);
                           float invertedY = -normalizedY;
                           int lightgunY = static_cast<int>((invertedY + 1.0f) * 0.5f * windowHeight);
                            printf("Joystick %i\n",lightgunY);
+                           bugY=lightgunY;
                       }
                 printf("Joystick %d axis %d value: %d\n",
                        e.jaxis.which,
