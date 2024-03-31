@@ -206,6 +206,12 @@ sceneManager->setShadowCasterRenderBackFaces(false);
   cubeNode->attachObject(cubeEntity);
   cubeNode->scale(0.1,0.1,0.1);
 
+  //for testing with mouse collision checking later
+//   Entity* cubeEntity2 = sceneManager->createEntity("ogrehead.mesh");
+//    Ogre::SceneNode* cubeNodee= cubeNode->createChildSceneNode(Ogre::Vector3(81, 41, 0));
+//     cubeNodee->attachObject(cubeEntity2);
+
+    // cubeNodee->scale(0.1,0.1,0.1);
 // Load particle system from script file
 Ogre::ParticleSystem* particleSystem = sceneManager->createParticleSystem("MyParticleSystem", "Examples/Smoke");
 
