@@ -37,6 +37,14 @@ int range = 10 - -10 + 1;
 //int num = rand() % range + min;
 
 const float CAMERA_MOVE_SPEED = 10.0f;
+float lookupdown;
+float yrot;       /* Camera rotation variable */
+float xpos, zpos; /* Camera pos variable */
+float walkbias, walkbiasangle; /* Head-bobbing variables */
+float jump;
+const float Gravity = 9.81; // e= 1/2mv^2
+const float piover180 = 0.0174532925f;
+
 
 SDL_DisplayMode dm;
 
@@ -192,6 +200,7 @@ sceneManager->setShadowCasterRenderBackFaces(false);
    // Ogre::Entity* cubeEntity = sceneManager->createEntity("Cube.mesh");
         Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
    //     Ogre::Entity* cubeEntity = sceneManager->createEntity("test.obj");
+    //    Ogre::Entity* cubeEntity = sceneManager->createEntity("test.3ds");
 //
   Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
   cubeNode->attachObject(cubeEntity);
@@ -355,6 +364,21 @@ cubeNode2->setVisible(true);
         }
                    switch( event.type )
             {
+                    case SDL_MOUSEMOTION:
+                    if (event.motion.yrel!=0)
+                    {
+                    if(lookupdown+event.motion.yrel < 40 && event.motion.yrel+lookupdown > -40)
+                    {	lookupdown += (float)(event.motion.yrel);	};
+                    };
+
+                    if(event.motion.xrel!=0)
+                    {
+                        if(yrot - event.motion.xrel > 359 || yrot - event.motion.xrel < -359){yrot = 0;}
+                        yrot -= (float)(event.motion.xrel);
+                    };
+                    break;
+
+
                 case SDL_KEYDOWN:
 
 
@@ -467,7 +491,17 @@ cubeNode2->setVisible(true);
 //            }
       //  }
     }
-//see
+//
+
+// Convert mouse movement to angles
+//float yawAngle = static_cast<float>(yrot) / 360;
+//float pitchAngle = static_cast<float>(lookupdown) / 360;
+//camNode->yaw(Ogre::Degree(-yawAngle), Ogre::Node::TS_WORLD);
+//Ogre::Quaternion pitchRotation(Ogre::Degree(-pitchAngle), Ogre::Vector3::UNIT_X);
+//Ogre::Quaternion newOrientation = camNode->getOrientation() * pitchRotation;
+//camNode->setOrientation(newOrientation);
+
+
     // Update scene
     cubeNode->yaw(Ogre::Degree(0.1f));
 
