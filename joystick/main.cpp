@@ -6,12 +6,14 @@
 #include <ctime>
 
 // Screen dimensions
+const int windowWidth = 800;
+const int windowHeight = 600;
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
-
 // Bug dimensions
 const int BUG_WIDTH = 50;
 const int BUG_HEIGHT = 50;
+#define SINDEN
 
 // Function to check collision between two rectangles
 bool checkCollision(SDL_Rect a, SDL_Rect b) {
@@ -61,6 +63,15 @@ int main(int argc, char* args[]) {
         std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;
     }
+#ifdef SINDEN
+    SDL_Surface *background = IMG_Load("SindenBorderWhiteLarge_Wide.png");
+    if(background == NULL)
+    {
+        SDL_ShowSimpleMessageBox(0, "Background init error",         SDL_GetError(), window);
+    }
+    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, background);
+    SDL_FreeSurface(background);
+#endif
     // Load images
     SDL_Surface* bugSurface = IMG_Load("bug.png");
     if (!bugSurface) {
@@ -121,6 +132,26 @@ printf("Joystick has %d axes, %d hats, %d balls, and %d buttons\n",
             }
             switch(e.type){
             case SDL_JOYAXISMOTION:
+                if (e.jaxis.axis == 0) {
+                          // X-axis motion
+                          int xAxisValue = e.jaxis.value;
+                          // Normalize the axis value to the range [-1, 1]
+                          float normalizedX = static_cast<float>(xAxisValue) / 32767.0f;
+                          // Process the normalized value, e.g., adjust aim horizontally
+                          int lightgunX = static_cast<int>((normalizedX + 1.0f) * 0.5f * windowWidth);
+printf("Joystick %i\n",lightgunX);
+                }
+                      else if (e.jaxis.axis == 1) {
+                          // Y-axis motion
+                          int yAxisValue = e.jaxis.value;
+                          // Normalize the axis value to the range [-1, 1]
+                          float normalizedY = static_cast<float>(yAxisValue) / 32767.0f;
+                          // Process the normalized value, e.g., adjust aim vertically
+                          // Invert the axis as described
+                          float invertedY = -normalizedY;
+                          int lightgunY = static_cast<int>((invertedY + 1.0f) * 0.5f * windowHeight);
+                           printf("Joystick %i\n",lightgunY);
+                      }
                 printf("Joystick %d axis %d value: %d\n",
                        e.jaxis.which,
                        e.jaxis.axis, e.jaxis.value);
@@ -171,9 +202,11 @@ printf("Joystick has %d axes, %d hats, %d balls, and %d buttons\n",
         }
 
         // Clear screen
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_RenderClear(renderer);
-
+     SDL_SetRenderDrawColor(renderer, 25, 25, 80, 25);
+     SDL_RenderClear(renderer);
+#ifdef SINDEN
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+#endif
         // Render bug
         SDL_Rect bugRect = { bugX, bugY, BUG_WIDTH, BUG_HEIGHT };
         SDL_RenderCopy(renderer, bugTexture, NULL, &bugRect);
