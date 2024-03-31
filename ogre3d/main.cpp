@@ -170,7 +170,7 @@ sceneManager->setShadowCasterRenderBackFaces(false);
   //  sceneManager->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
 
   //https://forums.ogre3d.org/viewtopic.php?t=64514
-  Ogre::String lNameOfResourceGroup = "Mission 1 : Deliver Tom";
+  Ogre::String lNameOfResourceGroup = "resources : maindirectory";
   		Ogre::ResourceGroupManager& lRgMgr = Ogre::ResourceGroupManager::getSingleton();
 		lRgMgr.createResourceGroup(lNameOfResourceGroup);
 		Ogre::String lDirectoryToLoad = "./";
@@ -186,14 +186,23 @@ sceneManager->setShadowCasterRenderBackFaces(false);
 
 
 //Add Cube
- //   Ogre::Entity* cubeEntity = sceneManager->createEntity("test.mesh");
+ //Ogre::Entity* cubeEntity = sceneManager->createEntity("test.mesh");
+   // Ogre::Entity* cubeEntity = sceneManager->createEntity("Cube.mesh");
         Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
+   //     Ogre::Entity* cubeEntity = sceneManager->createEntity("test.obj");
 //
   Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
   cubeNode->attachObject(cubeEntity);
   cubeNode->scale(0.1,0.1,0.1);
 
+// Load particle system from script file
+Ogre::ParticleSystem* particleSystem = sceneManager->createParticleSystem("MyParticleSystem", "Examples/Smoke");
 
+// Attach particle system to a scene node
+Ogre::SceneNode* particleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+particleNode->attachObject(particleSystem);
+//particleNode->setPosition(10,10,0);
+//particleNode->scale(0.1,0.1,0.1);
 // // Create a material
 //Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName("Material");
 
