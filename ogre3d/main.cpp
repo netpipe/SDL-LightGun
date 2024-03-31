@@ -33,6 +33,8 @@ bool isFullScreen = false; // false=fullscreen
 bool autoload = false;
 int clipsize = 5;
 bool reload = false;
+int range = 10 - -10 + 1;
+//int num = rand() % range + min;
 
 SDL_DisplayMode dm;
 
@@ -148,7 +150,8 @@ sceneManager->setShadowCasterRenderBackFaces(false);
       // without light we would just get a black screen
     Ogre::Light* light = sceneManager->createLight("MainLight");
     Ogre::SceneNode* lightNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-    lightNode->setPosition(0, 5, 11);
+    //lightNode->setPosition(0, 5, 11);
+     lightNode->setPosition(20, 80, 50);
     lightNode->attachObject(light);
   // Create camera and viewport
       SceneNode* camNode = sceneManager->getRootSceneNode()->createChildSceneNode();
@@ -162,7 +165,7 @@ sceneManager->setShadowCasterRenderBackFaces(false);
 
   Ogre::Viewport* viewport = ogreWindow->addViewport(camera);
   viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
-  //  sceneManager->setAmbientLight(ColourValue(0, 0, 0));
+    sceneManager->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
   //  sceneManager->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
   //https://forums.ogre3d.org/viewtopic.php?t=64514
   Ogre::String lNameOfResourceGroup = "Mission 1 : Deliver Tom";
@@ -181,14 +184,17 @@ sceneManager->setShadowCasterRenderBackFaces(false);
 
 
 //Add Cube
-    Ogre::Entity* cubeEntity = sceneManager->createEntity("test.mesh");
-//        Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
+  //  Ogre::Entity* cubeEntity = sceneManager->createEntity("Cube.mesh");
+        Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
 //
   Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
   cubeNode->attachObject(cubeEntity);
+  cubeNode->scale(0.1,0.1,0.1);
+
+
 // // Create a material
-//Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName("Ogre");
-//
+Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName("Material");
+
 //// Assign the material to the entity's submeshes
 //for (unsigned int i = 0; i < cubeEntity->getNumSubEntities(); ++i) {
 //    cubeEntity->getSubEntity(i)->setMaterial(material);
@@ -327,7 +333,10 @@ cubeNode2->setVisible(true);
                 if (hit.movable && hit.movable->getParentSceneNode() == cubeNode) {
                     // If the model is clicked, play animation and hide the model
                    // cubeNode->setVisible(false);
-                    cubeNode->flipVisibility(true);
+                  //  cubeNode->flipVisibility(true);
+
+  cubeNode->setPosition(rand() % range + -10,rand() % range + -10,0);
+
                     // Play animation here
                     break; // No need to check further
                 }
