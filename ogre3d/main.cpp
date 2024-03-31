@@ -152,6 +152,7 @@ sceneManager->setShadowCasterRenderBackFaces(false);
     Ogre::SceneNode* lightNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     //lightNode->setPosition(0, 5, 11);
      lightNode->setPosition(20, 80, 50);
+
     lightNode->attachObject(light);
   // Create camera and viewport
       SceneNode* camNode = sceneManager->getRootSceneNode()->createChildSceneNode();
@@ -165,8 +166,9 @@ sceneManager->setShadowCasterRenderBackFaces(false);
 
   Ogre::Viewport* viewport = ogreWindow->addViewport(camera);
   viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
-    sceneManager->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+    sceneManager->setAmbientLight(ColourValue(0, 0, 0));
   //  sceneManager->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+
   //https://forums.ogre3d.org/viewtopic.php?t=64514
   Ogre::String lNameOfResourceGroup = "Mission 1 : Deliver Tom";
   		Ogre::ResourceGroupManager& lRgMgr = Ogre::ResourceGroupManager::getSingleton();
@@ -184,7 +186,7 @@ sceneManager->setShadowCasterRenderBackFaces(false);
 
 
 //Add Cube
-  //  Ogre::Entity* cubeEntity = sceneManager->createEntity("Cube.mesh");
+ //   Ogre::Entity* cubeEntity = sceneManager->createEntity("test.mesh");
         Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
 //
   Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
@@ -193,7 +195,7 @@ sceneManager->setShadowCasterRenderBackFaces(false);
 
 
 // // Create a material
-Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName("Material");
+//Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName("Material");
 
 //// Assign the material to the entity's submeshes
 //for (unsigned int i = 0; i < cubeEntity->getNumSubEntities(); ++i) {
@@ -202,16 +204,13 @@ Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName("Ma
 
 
 //Add Ground Plane
-Ogre::Plane plane(Vector3::UNIT_Y, -10);
-    Ogre::MeshManager::getSingleton().createPlane(
-            "ground", Ogre::RGN_DEFAULT,
-            plane,
-            1500, 1500, 20, 20,
-            true,
-            1, 5, 5,
-            Vector3::UNIT_Z);
+Ogre::Plane groundPlane(Ogre::Vector3::UNIT_Y, -10);
+Ogre::MeshManager::getSingleton().createPlane(
+    "GroundMesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    groundPlane, 1000, 1000, 1, 1, true, 1, 10, 10, Ogre::Vector3::UNIT_Z);
 
-                Entity* groundEntity = sceneManager->createEntity("ground");
+          Ogre::Entity* groundEntity = sceneManager->createEntity("GroundEntity", "GroundMesh");
+groundEntity->setMaterialName("GroundMaterial");
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
 
 
