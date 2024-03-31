@@ -19,10 +19,10 @@
 #include <iostream>
 using namespace Ogre;
 
-//int windowWidth=1024;
-//int windowHeight=768;
-int windowWidth=1920;
-int windowHeight=1080;
+int windowWidth=1024;
+int windowHeight=768;
+//int windowWidth=1920;
+//int windowHeight=1080;
 
 // Bug dimensions
 const int BUG_WIDTH = 50;
@@ -57,19 +57,23 @@ void toggleFullScreen(SDL_Window* window, bool currentState)
 
 
 int main(int argc, char* argv[]) {
-  // Initialize SDL
 
-  if (SDL_GetCurrentDisplayMode(0, &dm) == 0) {
-    windowWidth = dm.w;
-    windowHeight = dm.h;
-} else {
-    // Failed to get screen resolution
-}
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
     return 1;
   }
+    // Initialize SDL
+   SDL_DisplayMode dm;
+  if (SDL_GetCurrentDisplayMode(0, &dm) == 0) {
+          std::cout << "Current resolution: " << dm.w << "x" << dm.h << std::endl;
+        std::cout << "Refresh rate: " << dm.refresh_rate << " Hz" << std::endl;
+    windowWidth = dm.w;
+    windowHeight = dm.h;
+} else {
+
+         std::cerr << "Failed to get display mode: " << SDL_GetError() << std::endl;
+}
     // Initialize SDL_mixer
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
     {
@@ -402,6 +406,9 @@ overlay->show();
 
     SDL_Delay(1);
   }
+     // Free resources
+    Mix_FreeChunk(squishSound);
+   // Mix_FreeChunk(backgroundMusic);
 
   // Cleanup
   delete root;
