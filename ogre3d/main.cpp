@@ -36,6 +36,8 @@ bool reload = false;
 int range = 10 - -10 + 1;
 //int num = rand() % range + min;
 
+const float CAMERA_MOVE_SPEED = 10.0f;
+
 SDL_DisplayMode dm;
 
 #define SINDEN
@@ -375,6 +377,26 @@ cubeNode2->setVisible(true);
                             std::cerr << "autoloadon" << std::endl;
                         };
                         SDL_Delay(100);
+                        break;
+                                            case SDLK_w: // Move camera forward
+                        camNode->translate(camNode->getOrientation() * Vector3::UNIT_Z * CAMERA_MOVE_SPEED);
+                        break;
+                    case SDLK_s: // Move camera backward
+                        camNode->translate(camNode->getOrientation() * -Vector3::UNIT_Z * CAMERA_MOVE_SPEED);
+                        break;
+                    case SDLK_a: // Move camera left
+                        camNode->translate(camNode->getOrientation() * -Vector3::UNIT_X * CAMERA_MOVE_SPEED);
+                        break;
+                    case SDLK_d: // Move camera right
+                        camNode->translate(camNode->getOrientation() * Vector3::UNIT_X * CAMERA_MOVE_SPEED);
+                        break;
+                    case SDLK_q: // Move camera up
+                        camNode->translate(Vector3::UNIT_Y * CAMERA_MOVE_SPEED);
+                        break;
+                    case SDLK_e: // Move camera down
+                        camNode->translate(-Vector3::UNIT_Y * CAMERA_MOVE_SPEED);
+                        break;
+                    default:
                         break;
                 }
             }
