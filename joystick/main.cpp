@@ -149,8 +149,8 @@ printf("Joystick %i\n",lightgunX);
                           float normalizedY = static_cast<float>(yAxisValue) / 32767.0f;
                           // Process the normalized value, e.g., adjust aim vertically
                           // Invert the axis as described
-                          float invertedY = -normalizedY;
-                          int lightgunY = static_cast<int>((invertedY + 1.0f) * 0.5f * windowHeight);
+                          float invertedY = normalizedY;
+                          int lightgunY = static_cast<int>((invertedY + 1.0f) * 0.6f * windowHeight);
                            printf("Joystick %i\n",lightgunY);
                            bugY=lightgunY;
                       }
