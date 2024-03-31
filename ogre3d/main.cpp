@@ -148,7 +148,7 @@ sceneManager->setShadowCasterRenderBackFaces(false);
       // without light we would just get a black screen
     Ogre::Light* light = sceneManager->createLight("MainLight");
     Ogre::SceneNode* lightNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-    lightNode->setPosition(0, 10, 15);
+    lightNode->setPosition(0, 5, 11);
     lightNode->attachObject(light);
   // Create camera and viewport
       SceneNode* camNode = sceneManager->getRootSceneNode()->createChildSceneNode();
@@ -182,9 +182,18 @@ sceneManager->setShadowCasterRenderBackFaces(false);
 
 //Add Cube
     Ogre::Entity* cubeEntity = sceneManager->createEntity("test.mesh");
-     //   Ogre::Entity* cubeEntity = sceneManager->createEntity("test.obj");
+//        Ogre::Entity* cubeEntity = sceneManager->createEntity("ogrehead.mesh");
+//
   Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
   cubeNode->attachObject(cubeEntity);
+// // Create a material
+//Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName("Ogre");
+//
+//// Assign the material to the entity's submeshes
+//for (unsigned int i = 0; i < cubeEntity->getNumSubEntities(); ++i) {
+//    cubeEntity->getSubEntity(i)->setMaterial(material);
+//}
+
 
 //Add Ground Plane
 Ogre::Plane plane(Vector3::UNIT_Y, -10);
