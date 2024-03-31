@@ -1,0 +1,72 @@
+material WaterMaterial
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+
+            // Water color
+            ambient 0.1 0.1 0.3
+            diffuse 0.2 0.5 0.8
+            specular 0.3 0.3 0.3 1
+
+            // Water texture for ripples or waves
+            texture_unit
+            {
+                texture BeachStones.jpg
+                // Optionally, specify texture filtering and addressing modes
+                filtering trilinear
+                address_mode wrap
+            }
+
+            // Reflection texture for simulating reflections
+            texture_unit
+            {
+                texture Water02.jpg
+                // Optionally, specify texture filtering and addressing modes
+                filtering trilinear
+                address_mode wrap
+
+                // Set texture environment to combine with water color
+                tex_coord_set 1
+                texture_coord_gen reflection
+            }
+
+            // Refraction texture for simulating refraction
+            texture_unit
+            {
+                texture Water01.jpg
+                // Optionally, specify texture filtering and addressing modes
+                filtering trilinear
+                address_mode wrap
+
+                // Set texture environment to combine with water color
+                tex_coord_set 1
+                texture_coord_gen normal
+            }
+
+            // Optional: Normal map for adding surface detail
+            //texture_unit
+            //{
+            //    texture waveNM.png
+            //    // Optionally, specify texture filtering and addressing modes
+            //    filtering trilinear
+            //    address_mode wrap
+
+            //    // Use normal mapping to simulate water surface detail
+            //    texture_coord_set 0
+            //    texture_coord_gen normal
+            //}
+
+            // Optional: Add fog for underwater effects
+            //fog_override true
+            //fog_mode exp2
+            //fog_colour 0.2 0.2 0.3
+            //fog_density 0.002
+        }
+    }
+}
+

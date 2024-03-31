@@ -180,11 +180,13 @@ sceneManager->setShadowCasterRenderBackFaces(false);
 
 
 
-
+//Add Cube
     Ogre::Entity* cubeEntity = sceneManager->createEntity("test.mesh");
+     //   Ogre::Entity* cubeEntity = sceneManager->createEntity("test.obj");
   Ogre::SceneNode* cubeNode = sceneManager->getRootSceneNode()->createChildSceneNode();
   cubeNode->attachObject(cubeEntity);
 
+//Add Ground Plane
 Ogre::Plane plane(Vector3::UNIT_Y, -10);
     Ogre::MeshManager::getSingleton().createPlane(
             "ground", Ogre::RGN_DEFAULT,
@@ -196,6 +198,7 @@ Ogre::Plane plane(Vector3::UNIT_Y, -10);
 
                 Entity* groundEntity = sceneManager->createEntity("ground");
     sceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
+
 
 
 // Load the HUD texture
@@ -233,6 +236,25 @@ overlay->show();
 
 
 
+// Create a water surface mesh (e.g., a plane)
+Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y, 0);
+Ogre::MeshManager::getSingleton().createPlane(
+    "WaterSurface", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    waterPlane, 1000, 1000, 1, 1, true, 1, 10, 10, Ogre::Vector3::UNIT_Z);
+
+// Create a water surface entity
+Ogre::Entity* waterEntity = sceneManager->createEntity("WaterSurface", "WaterSurface");
+
+// Apply a water material to the water surface entity
+waterEntity->setMaterialName("WaterMaterial");
+
+// Attach the water surface entity to the scene
+Ogre::SceneNode* cubeNode2 =sceneManager->getRootSceneNode()->createChildSceneNode();
+
+cubeNode2->attachObject(waterEntity);
+cubeNode2->setPosition(1,-1,1);
+cubeNode2->setVisible(true);
+//Ogre::SceneNode* testNode = sceneManager->getRootSceneNode()->get
 
 
 //// Create a fullscreen quad
